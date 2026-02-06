@@ -50,7 +50,6 @@ public class WaitlistTest : PageTest
     //TODO - utilize DataRow functionality
     public async Task WaitlistValidationTest()
     {
-        string dialogMessage = null;
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
         await waitlist.GotoAsync();
         
@@ -71,6 +70,6 @@ public class WaitlistTest : PageTest
         await Task.Delay(500);
         Assert.AreEqual(EmailMessageString, waitlist.DialogMessage);
         
-        /*Afterwards logic follows same pattern*/
+        /*Afterward, logic follows same pattern*/
     }
 }
