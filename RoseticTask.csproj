@@ -28,4 +28,8 @@
     <Folder Include="Utilization\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include=".github\workflows\playwright.yaml" />
+  </ItemGroup>
+
 </Project>
