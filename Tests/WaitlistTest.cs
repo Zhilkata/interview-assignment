@@ -24,6 +24,7 @@ public class WaitlistTest : PageTest
     private const string ProjectDescriptionString = "Test Text 123@!";
         
     [TestMethod]
+    [TestCategory("End-to-End")]
     public async Task WaitlistE2ETest()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
@@ -64,31 +65,29 @@ public class WaitlistTest : PageTest
         var message = bodyJson.Value[0].GetProperty("message").GetString();
         Assert.IsTrue(message.Contains("You've joined the waitlist!"));
     }
-
-    [TestMethod]
-    //TODO - utilize DataRow functionality
-    public async Task WaitlistValidationTest()
+    
+    [DataTestMethod]
+    [DataRow("", "", "", PopupMessageString, DisplayName = "Empty fields validation")]
+    [DataRow(EmailOneCharString, "", "", PopupMessageString, DisplayName = "Single character email validation")]
+    [DataRow(EmailOneCharString, FirstNameString, LastNameString, EmailMessageString, DisplayName = "Invalid email format validation")]
+    public async Task WaitlistValidationTest(string email, string firstName, string lastName, string expectedMessage)
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
         await waitlist.NavigateToAsync("https://www.rosetic.ai/");
-        
+    
+        if (!string.IsNullOrEmpty(email))
+            await waitlist.FillEmailAsync(email);
+    
+        if (!string.IsNullOrEmpty(firstName))
+            await waitlist.FillFirstNameAsync(firstName);
+    
+        if (!string.IsNullOrEmpty(lastName))
+            await waitlist.FillLastNameAsync(lastName);
+    
         await waitlist.ClickNextButtonAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
+    
+        Assert.AreEqual(expectedMessage, waitlist.DialogMessage);
         
-        // Enter single character in email field -> get same response in alert
-        await waitlist.FillEmailAsync(EmailOneCharString);
-        await waitlist.ClickNextButtonAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
-        
-        // Get new alert message about email format
-        await waitlist.FillFirstNameAsync(FirstNameString);
-        await waitlist.FillLastNameAsync(LastNameString);
-        await waitlist.ClickNextButtonAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(EmailMessageString, waitlist.DialogMessage);
-        
-        /*Afterward, logic follows same pattern*/
+        /*Now DataRow is utilized, but logic won't be as straightforward as it was initially*/
     }
 }
