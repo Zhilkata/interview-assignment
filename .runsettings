@@ -14,7 +14,8 @@
     <TreatNoTestsAsError>true</TreatNoTestsAsError>
     
     <EnvironmentVariables>
-      <HEADED>1</HEADED>
+      <HEADED>0</HEADED>
+      <PWDEBUG>0</PWDEBUG>
     </EnvironmentVariables>
   </RunConfiguration>
   

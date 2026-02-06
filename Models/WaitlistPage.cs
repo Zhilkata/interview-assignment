@@ -21,15 +21,15 @@ public class WaitlistPage
 
     private readonly ILocator _projectTextbox;
 
-    private readonly ILocator _updatesChechbox;
-    private readonly ILocator _agreementChechbox;
+    private readonly ILocator _updatesCheckbox;
+    private readonly ILocator _agreementCheckbox;
 
     private readonly ILocator _joinWaitlistButton;
 
     public WaitlistPage(IPage page)
     {
         _page = page;
-        SetupDialogueHandler();
+        
         _firstNameInput = page.Locator("#First-Name");
         _lastNameInput = page.Locator("#Last-Name");
         _emailInput = page.Locator("#Email-Address");
@@ -44,15 +44,17 @@ public class WaitlistPage
         
         _projectTextbox = page.Locator("#Describe-your-project");
         
-        _updatesChechbox = page.Locator("#communications-consent");
-        _agreementChechbox = page.Locator("#Email-Consent");
+        _updatesCheckbox = page.Locator("#communications-consent");
+        _agreementCheckbox = page.Locator("#Email-Consent");
 
         _joinWaitlistButton = page.Locator("input[value='JOIN THE WAITLIST']");
+        
+        SetupDialogueHandler();
     }
 
-    public async Task GotoAsync()
+    public async Task NavigateToAsync(string text)
     {
-        await _page.GotoAsync("https://www.rosetic.ai/#waitlist-form");
+        await _page.GotoAsync(text);
     }
 
     public async Task FillFirstNameAsync(string text)
@@ -110,12 +112,12 @@ public class WaitlistPage
 
     public async Task ClickUpdatesCheckBoxAsync()
     {
-        await _updatesChechbox.ClickAsync();
+        await _updatesCheckbox.ClickAsync();
     }
 
     public async Task ClickAgreementCheckBoxAsync()
     {
-        await _agreementChechbox.ClickAsync();
+        await _agreementCheckbox.ClickAsync();
     }
 
     public async Task ClickJoinWaitlistButtonAsync()

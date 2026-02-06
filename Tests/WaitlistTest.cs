@@ -27,7 +27,7 @@ public class WaitlistTest : PageTest
     public async Task WaitlistE2ETest()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.GotoAsync();
+        await waitlist.NavigateToAsync("https://www.rosetic.ai/#waitlist-form");
         
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
@@ -42,8 +42,27 @@ public class WaitlistTest : PageTest
         await waitlist.SelectProjectDropdownOptionAsync(ProjectDropdownString);
         
         await waitlist.FillProjectDescriptionAsync(ProjectDescriptionString);
-
-        //await waitlist.ClickJoinWaitlistButtonAsync();
+        
+        /*Very rudimentary mock setup that simulates submitting the form and
+        hitting an endpoint with the following message. I don't click on the button due to requirement. */
+        
+        await Page.RouteAsync("**/www.rosetic.ai/**", async route =>
+        {
+            var json = new[] { new { status = 200, message = "You've joined the waitlist!" } };
+            await route.FulfillAsync(new()
+            {
+                Json = json
+            });
+        });
+        
+        var responseTask = Page.WaitForResponseAsync("**/www.rosetic.ai/**");
+        
+        await Page.GotoAsync("https://www.rosetic.ai/");
+        
+        var responseBody = await responseTask;
+        var bodyJson = await responseBody.JsonAsync();
+        var message = bodyJson.Value[0].GetProperty("message").GetString();
+        Assert.IsTrue(message.Contains("You've joined the waitlist!"));
     }
 
     [TestMethod]
@@ -51,7 +70,7 @@ public class WaitlistTest : PageTest
     public async Task WaitlistValidationTest()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.GotoAsync();
+        await waitlist.NavigateToAsync("https://www.rosetic.ai/");
         
         await waitlist.ClickNextButtonAsync();
         await Task.Delay(500);
