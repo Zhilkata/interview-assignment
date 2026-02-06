@@ -54,29 +54,22 @@ public class WaitlistTest : PageTest
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
         await waitlist.GotoAsync();
         
-        // Handling without input
-        waitlist.Page.Dialog += async (_, dialog) =>
-        {
-            dialogMessage = dialog.Message;
-            await dialog.DismissAsync();
-        };
-
         await waitlist.ClickNextButtonAsync();
         await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, dialogMessage);
+        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
         
         // Enter single character in email field -> get same response in alert
         await waitlist.FillEmailAsync(EmailOneCharString);
         await waitlist.ClickNextButtonAsync();
         await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, dialogMessage);
+        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
         
         // Get new alert message about email format
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
         await waitlist.ClickNextButtonAsync();
         await Task.Delay(500);
-        Assert.AreEqual(EmailMessageString, dialogMessage);
+        Assert.AreEqual(EmailMessageString, waitlist.DialogMessage);
         
         /*Afterwards logic follows same pattern*/
     }

@@ -4,8 +4,8 @@ namespace RoseticTask.Models;
 
 public class WaitlistPage
 {
-    private readonly IPlaywright _playwright;
     private readonly IPage _page;
+    public string? DialogMessage { get; private set; }
     
     private readonly ILocator _firstNameInput;
     private readonly ILocator _lastNameInput;
@@ -25,12 +25,11 @@ public class WaitlistPage
     private readonly ILocator _agreementChechbox;
 
     private readonly ILocator _joinWaitlistButton;
-    
-    public IPage Page => _page;
 
     public WaitlistPage(IPage page)
     {
         _page = page;
+        SetupDialogueHandler();
         _firstNameInput = page.Locator("#First-Name");
         _lastNameInput = page.Locator("#Last-Name");
         _emailInput = page.Locator("#Email-Address");
@@ -122,5 +121,14 @@ public class WaitlistPage
     public async Task ClickJoinWaitlistButtonAsync()
     {
         await _joinWaitlistButton.ClickAsync();
+    }
+
+    private void SetupDialogueHandler()
+    {
+        _page.Dialog += async (_, dialog) =>
+        {
+            DialogMessage = dialog.Message;
+            await dialog.DismissAsync();
+        };
     }
 }
