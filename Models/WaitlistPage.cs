@@ -59,19 +59,16 @@ public class WaitlistPage
 
     public async Task FillFirstNameAsync(string text)
     {
-        await _firstNameInput.ClickAsync();
         await _firstNameInput.FillAsync(text);
     }
 
     public async Task FillLastNameAsync(string text)
     {
-        await _lastNameInput.ClickAsync();
         await _lastNameInput.FillAsync(text);
     }
     
     public async Task FillEmailAsync(string text)
     {
-        await _emailInput.ClickAsync();
         await _emailInput.FillAsync(text);
     }
 
@@ -106,7 +103,6 @@ public class WaitlistPage
     
     public async Task FillProjectDescriptionAsync(string text)
     {
-        await _projectTextbox.ClickAsync();
         await _projectTextbox.FillAsync(text);
     }
 
