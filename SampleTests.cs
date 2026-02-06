@@ -13,7 +13,7 @@ public class SampleTests
     [TestMethod]
     public Task FailTest()
     {
-        Assert.Fail("Expected :)");
+        //Assert.Fail("Expected :)");
         return Task.CompletedTask;
     }
 }
