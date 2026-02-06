@@ -53,9 +53,9 @@ My biggest challenges for sure were the alert handling and API mocking. There's 
 - API and UI testing would rarely live in the same place due to how unmaintanable and off-putting it looks. I've included the mocking simply to simulate and show the possibilities; in the real world, I'd avoid that.
 
 ## Others
-- The SampleTests.cs were part of the initial setup sanity testing the framework (I had installation problems that made me paranoid about it not breaking at some point). They also helped showcase the actions test success/failure reporting.
-- The dotnet generated .gitignore is included in the repo because I find it a good practice that anyone cloning the repo can benefit from. Test runs generate a lot of garbage that has no place in the repo.
-- The .runsettings were mentioned in several places throughout the Playwright and MSTest documentation. Thus, I took the sample configuration, removed what I didn't need and placed some common-use flags and settings inside. The biggest thing of note here is that I changed the Parallelization from Class to Method-level. In bigger, more complex projects, this is a recipe for disaster unless the isolation is perfect. But it cut a lot of time from my local tests, and is applicable in the current state, so I left it as that.
+- The ``SampleTests.cs`` were part of the initial setup sanity testing the framework (I had installation problems that made me paranoid about it not breaking at some point). They also helped showcase the actions test success/failure reporting.
+- The dotnet generated ``.gitignore`` is included in the repo because I find it a good practice that anyone cloning the repo can benefit from. Test runs generate a lot of garbage that has no place in the repo.
+- The ``.runsettings`` were mentioned in several places throughout the Playwright and MSTest documentation. Thus, I took the sample configuration, removed what I didn't need and placed some common-use flags and settings inside. The biggest thing of note here is that I changed the Parallelization from Class to Method-level. In bigger, more complex projects, this is a recipe for disaster unless the isolation is perfect. But it cut a lot of time from my local tests, and is applicable in the current state, so I left it as that.
 
 # Takeaway
 I didn't expect Playwright to be so different, both from Selenium and its TypeScript version. The .NET version has specifics I had to trial-and-error and actively look guidance about.
