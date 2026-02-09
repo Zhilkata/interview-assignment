@@ -25,19 +25,19 @@ public class WaitlistTest : PageTest
     public async Task WaitlistE2ETest()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.NavigateToAsync("https://www.rosetic.ai/#waitlist-form");
+        await waitlist.NavigateAsync("https://www.rosetic.ai/#waitlist-form");
         
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
         await waitlist.FillEmailAsync(EmailString);
-        await waitlist.ClickNextButtonAsync();
+        await waitlist.ClickNextAsync();
 
-        await waitlist.ClickProfessionalButtonAsync();
+        await waitlist.ClickProfessionalAsync();
         
-        await waitlist.SelectIndustryDropdownOptionAsync(IndustryDropdownString);
-        await waitlist.SelectCompanyDropdownOptionAsync(CompanyDropdownString);
-        await waitlist.SelectJobDropdownOptionAsync(JobFunctionDropdownString);
-        await waitlist.SelectProjectDropdownOptionAsync(ProjectDropdownString);
+        await waitlist.SelectIndustryAsync(IndustryDropdownString);
+        await waitlist.SelectCompanySizeAsync(CompanyDropdownString);
+        await waitlist.SelectJobFunctionAsync(JobFunctionDropdownString);
+        await waitlist.SelectProjectAsync(ProjectDropdownString);
         
         await waitlist.FillProjectDescriptionAsync(ProjectDescriptionString);
         
@@ -68,22 +68,22 @@ public class WaitlistTest : PageTest
     public async Task WaitlistValidationTest()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.NavigateToAsync("https://www.rosetic.ai/");
+        await waitlist.NavigateAsync("https://www.rosetic.ai/");
         
-        await waitlist.ClickNextButtonAsync();
+        await waitlist.ClickNextAsync();
         await Task.Delay(500);
         Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
         
         // Enter single character in email field -> get same response in alert
         await waitlist.FillEmailAsync(EmailOneCharString);
-        await waitlist.ClickNextButtonAsync();
+        await waitlist.ClickNextAsync();
         await Task.Delay(500);
         Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
         
         // Get new alert message about email format
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
-        await waitlist.ClickNextButtonAsync();
+        await waitlist.ClickNextAsync();
         await Task.Delay(500);
         Assert.AreEqual(EmailMessageString, waitlist.DialogMessage);
         

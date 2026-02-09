@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Utilization\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 
   <ItemGroup>
