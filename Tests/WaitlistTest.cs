@@ -1,3 +1,4 @@
+using System.Text.Json;
 using InterviewTask.Models;
 using Microsoft.Playwright.MSTest;
 
@@ -25,14 +26,31 @@ public class WaitlistTest : PageTest
     private const string PopupMessageString = "Please fill out all fields before proceeding.";
     private const string EmailMessageString = "Please enter a valid email address.";
     #endregion
+
+    private static string BaseUrl
+    {
+        get
+        {
+            var json = File.ReadAllText("secrets.json");
+            return JsonDocument.Parse(json).RootElement.GetProperty("baseUrl").GetString();
+        }
+    }
     
-        
+    private static string SimulatedApiUrl
+    {
+        get
+        {
+            var json = File.ReadAllText("secrets.json");
+            return JsonDocument.Parse(json).RootElement.GetProperty("simulatedApiUrl").GetString();
+        }
+    }
+    
     [TestMethod]
     public async Task WaitlistForm_HappyPath()
     {
         const string expectedMessage = "You've joined the waitlist!";
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.NavigateAsync("https://www.rosetic.ai/#waitlist-form");
+        await waitlist.NavigateAsync($"{BaseUrl}/#waitlist-form");
         
         // Form fill procedure
         await waitlist.FillFirstNameAsync(FirstNameString);
@@ -49,14 +67,14 @@ public class WaitlistTest : PageTest
         /*Very rudimentary mock setup that simulates submitting the form and
         hitting an endpoint with the following message. I don't click on the button due to requirement. */
         
-        await Page.RouteAsync("**/www.rosetic.ai/**", async route =>
+        await Page.RouteAsync($"**/{SimulatedApiUrl}/**", async route =>
         {
             var json = new[] { new { status = 200, message = expectedMessage } };
             await route.FulfillAsync(new(){ Json = json });
         });
         
-        var responseTask = Page.WaitForResponseAsync("**/www.rosetic.ai/**");
-        await Page.GotoAsync("https://www.rosetic.ai/");
+        var responseTask = Page.WaitForResponseAsync($"**/{SimulatedApiUrl}/**");
+        await Page.GotoAsync(BaseUrl);
         
         var response = await responseTask;
         var bodyJson = await response.JsonAsync();
@@ -69,7 +87,7 @@ public class WaitlistTest : PageTest
     public async Task WaitlistForm_FieldValidation()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.NavigateAsync("https://www.rosetic.ai/");
+        await waitlist.NavigateAsync(BaseUrl);
 
         // Click Next with empty fields
         await ClickNextAndVerifyDialog(waitlist, PopupMessageString);
