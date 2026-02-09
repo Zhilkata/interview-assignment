@@ -1,7 +1,7 @@
+using InterviewTask.Models;
 using Microsoft.Playwright.MSTest;
-using RoseticTask.Models;
 
-namespace RoseticTask.Tests;
+namespace InterviewTask.Tests;
 
 [TestClass]
 public class WaitlistTest : PageTest
