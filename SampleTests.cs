@@ -1,5 +1,8 @@
+/* Sample tests from set up. Left for discussion/historical reason, otherwise ignored from execution. */
+
 namespace RoseticTask;
 
+[Ignore]
 [TestClass]
 public class SampleTests
 {
