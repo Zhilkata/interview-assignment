@@ -64,29 +64,31 @@ public class WaitlistTest : PageTest
     }
 
     [TestMethod]
-    //TODO - utilize DataRow functionality
-    public async Task WaitlistValidationTest()
+    public async Task WaitlistForm_FieldValidation()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
         await waitlist.NavigateAsync("https://www.rosetic.ai/");
-        
-        await waitlist.ClickNextAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
-        
+
+        // Click Next with empty fields
+        await ClickNextAndVerifyDialog(waitlist, PopupMessageString);
+
         // Enter single character in email field -> get same response in alert
         await waitlist.FillEmailAsync(EmailOneCharString);
-        await waitlist.ClickNextAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
-        
+        await ClickNextAndVerifyDialog(waitlist, PopupMessageString);
+
         // Get new alert message about email format
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
-        await waitlist.ClickNextAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(EmailMessageString, waitlist.DialogMessage);
-        
+        await ClickNextAndVerifyDialog(waitlist, EmailMessageString);
+
         /*Afterward, logic follows same pattern*/
+
+        // Verify dialog helper
+        async Task ClickNextAndVerifyDialog(WaitlistPage page, string expectedMessage)
+        {
+            await page.ClickNextAsync();
+            await Task.Delay(500);
+            Assert.AreEqual(expectedMessage, page.DialogMessage);
+        }
     }
 }
