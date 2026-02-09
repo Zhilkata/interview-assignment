@@ -1,3 +1,4 @@
+using InterviewTask.Utilities;
 using Microsoft.Playwright;
 
 namespace InterviewTask.Models;
@@ -5,6 +6,7 @@ namespace InterviewTask.Models;
 public class WaitlistPage
 {
     private readonly IPage _page;
+    public string? DialogMessage { get; private set; }
 
     #region Step 1 Form Elements
     private readonly ILocator _firstNameInput;
@@ -24,9 +26,6 @@ public class WaitlistPage
     private readonly ILocator _agreementCheckbox;
     private readonly ILocator _joinWaitlistButton;
     #endregion
- 
-
-    public string? DialogMessage { get; private set; }
 
     public WaitlistPage(IPage page)
     {
@@ -49,7 +48,7 @@ public class WaitlistPage
         _agreementCheckbox = page.Locator("#Email-Consent");
         _joinWaitlistButton = page.Locator("input[value='JOIN THE WAITLIST']");
 
-        SetupDialogHandlerEvent();
+        AlertHelper.SetupAlertHandler(_page, message => DialogMessage = message);
     }
 
     // Navigation
@@ -83,13 +82,4 @@ public class WaitlistPage
     public async Task ClickAgreementCheckboxAsync() => await _agreementCheckbox.ClickAsync();
 
     public async Task ClickJoinWaitlistAsync() => await _joinWaitlistButton.ClickAsync();
-    
-    private void SetupDialogHandlerEvent()
-    {
-        _page.Dialog += async (_, dialog) =>
-        {
-            DialogMessage = dialog.Message;
-            await dialog.DismissAsync();
-        };
-    }
 }
