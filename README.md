@@ -1,7 +1,7 @@
 # Overview
-This is my solution for part of the Rosetic.AI QA Assignment.
+This is my solution for part of a QA Assignment.
 
-## How to setup?
+## How to set up?
 Make sure you have .NET 8 installed on your local machine. Other dependencies are automatically handled, meaning that you only have to:
 - Clone this repo locally.
 - Run the ```dotnet test``` command.
@@ -10,7 +10,7 @@ Suggestion: utilize the full ```dotnet test --settings:.runsettings --logger "co
 
 ## Why this tech stack?
 I chose **Playwright** + **MSTest** because I'm not very familiar with the details of their usage, but have researched that they gain popularity and are maintained.
-As such, I used the opportunity to setup a project following the documentation, and utilize the tools provided for tests based on the strategy I provided with a separate document.
+As such, I used the opportunity to set up a project following the documentation, and utilize the tools provided for tests based on the strategy I provided with a separate document.
 
 ## What's inside?
 Main repo contains a showcase of multiple Playwright functionalities, such as:
