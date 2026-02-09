@@ -6,20 +6,26 @@ namespace InterviewTask.Tests;
 [TestClass]
 public class WaitlistTest : PageTest
 {
+    #region Contact Information Strings
     private const string FirstNameString = "TestFN"; 
     private const string LastNameString = "TestLN";
     private const string EmailString = "test@test.com";
     private const string EmailOneCharString = "t";
-    
-    private const string PopupMessageString = "Please fill out all fields before proceeding.";
-    private const string EmailMessageString = "Please enter a valid email address.";
+    #endregion
 
+    #region Dropdown Options Strings
     private const string IndustryDropdownString = "SaaS / Software";
     private const string CompanyDropdownString = "1 - 10";
     private const string JobFunctionDropdownString = "Engineering / Dev";
     private const string ProjectDropdownString = "Developer Tools (IDEs, version control systems,etc.)";
-
     private const string ProjectDescriptionString = "Test Text 123@!";
+    #endregion
+
+    #region Alert Popup Message Strings
+    private const string PopupMessageString = "Please fill out all fields before proceeding.";
+    private const string EmailMessageString = "Please enter a valid email address.";
+    #endregion
+    
         
     [TestMethod]
     public async Task WaitlistForm_HappyPath()
