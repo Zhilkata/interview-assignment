@@ -27,5 +27,11 @@
   <ItemGroup>
     <Content Include=".github\workflows\playwright.yaml" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="secrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

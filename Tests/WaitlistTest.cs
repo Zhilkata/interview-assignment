@@ -1,3 +1,4 @@
+using System.Text.Json;
 using InterviewTask.Models;
 using Microsoft.Playwright.MSTest;
 
@@ -6,87 +7,108 @@ namespace InterviewTask.Tests;
 [TestClass]
 public class WaitlistTest : PageTest
 {
+    #region Contact Information Strings
     private const string FirstNameString = "TestFN"; 
     private const string LastNameString = "TestLN";
     private const string EmailString = "test@test.com";
     private const string EmailOneCharString = "t";
-    
-    private const string PopupMessageString = "Please fill out all fields before proceeding.";
-    private const string EmailMessageString = "Please enter a valid email address.";
+    #endregion
 
+    #region Dropdown Options Strings
     private const string IndustryDropdownString = "SaaS / Software";
     private const string CompanyDropdownString = "1 - 10";
     private const string JobFunctionDropdownString = "Engineering / Dev";
     private const string ProjectDropdownString = "Developer Tools (IDEs, version control systems,etc.)";
-
     private const string ProjectDescriptionString = "Test Text 123@!";
-        
-    [TestMethod]
-    public async Task WaitlistE2ETest()
+    #endregion
+
+    #region Alert Popup Message Strings
+    private const string PopupMessageString = "Please fill out all fields before proceeding.";
+    private const string EmailMessageString = "Please enter a valid email address.";
+    #endregion
+
+    private static string BaseUrl
     {
+        get
+        {
+            var json = File.ReadAllText("secrets.json");
+            return JsonDocument.Parse(json).RootElement.GetProperty("baseUrl").GetString();
+        }
+    }
+    
+    private static string SimulatedApiUrl
+    {
+        get
+        {
+            var json = File.ReadAllText("secrets.json");
+            return JsonDocument.Parse(json).RootElement.GetProperty("simulatedApiUrl").GetString();
+        }
+    }
+    
+    [TestMethod]
+    public async Task WaitlistForm_HappyPath()
+    {
+        const string expectedMessage = "You've joined the waitlist!";
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.NavigateAsync("https://www.rosetic.ai/#waitlist-form");
+        await waitlist.NavigateAsync($"{BaseUrl}/#waitlist-form");
         
+        // Form fill procedure
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
         await waitlist.FillEmailAsync(EmailString);
         await waitlist.ClickNextAsync();
-
         await waitlist.ClickProfessionalAsync();
-        
         await waitlist.SelectIndustryAsync(IndustryDropdownString);
         await waitlist.SelectCompanySizeAsync(CompanyDropdownString);
         await waitlist.SelectJobFunctionAsync(JobFunctionDropdownString);
         await waitlist.SelectProjectAsync(ProjectDropdownString);
-        
         await waitlist.FillProjectDescriptionAsync(ProjectDescriptionString);
         
         /*Very rudimentary mock setup that simulates submitting the form and
         hitting an endpoint with the following message. I don't click on the button due to requirement. */
         
-        await Page.RouteAsync("**/www.rosetic.ai/**", async route =>
+        await Page.RouteAsync($"**/{SimulatedApiUrl}/**", async route =>
         {
-            var json = new[] { new { status = 200, message = "You've joined the waitlist!" } };
-            await route.FulfillAsync(new()
-            {
-                Json = json
-            });
+            var json = new[] { new { status = 200, message = expectedMessage } };
+            await route.FulfillAsync(new(){ Json = json });
         });
         
-        var responseTask = Page.WaitForResponseAsync("**/www.rosetic.ai/**");
+        var responseTask = Page.WaitForResponseAsync($"**/{SimulatedApiUrl}/**");
+        await Page.GotoAsync(BaseUrl);
         
-        await Page.GotoAsync("https://www.rosetic.ai/");
-        
-        var responseBody = await responseTask;
-        var bodyJson = await responseBody.JsonAsync();
+        var response = await responseTask;
+        var bodyJson = await response.JsonAsync();
         var message = bodyJson.Value[0].GetProperty("message").GetString();
-        Assert.IsTrue(message.Contains("You've joined the waitlist!"));
+        
+        Assert.AreEqual(expectedMessage, message);
     }
 
     [TestMethod]
-    //TODO - utilize DataRow functionality
-    public async Task WaitlistValidationTest()
+    public async Task WaitlistForm_FieldValidation()
     {
         var waitlist = new WaitlistPage(await Browser.NewPageAsync());
-        await waitlist.NavigateAsync("https://www.rosetic.ai/");
-        
-        await waitlist.ClickNextAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
-        
+        await waitlist.NavigateAsync(BaseUrl);
+
+        // Click Next with empty fields
+        await ClickNextAndVerifyDialog(waitlist, PopupMessageString);
+
         // Enter single character in email field -> get same response in alert
         await waitlist.FillEmailAsync(EmailOneCharString);
-        await waitlist.ClickNextAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(PopupMessageString, waitlist.DialogMessage);
-        
+        await ClickNextAndVerifyDialog(waitlist, PopupMessageString);
+
         // Get new alert message about email format
         await waitlist.FillFirstNameAsync(FirstNameString);
         await waitlist.FillLastNameAsync(LastNameString);
-        await waitlist.ClickNextAsync();
-        await Task.Delay(500);
-        Assert.AreEqual(EmailMessageString, waitlist.DialogMessage);
-        
+        await ClickNextAndVerifyDialog(waitlist, EmailMessageString);
+
         /*Afterward, logic follows same pattern*/
+
+        // Verify dialog helper
+        async Task ClickNextAndVerifyDialog(WaitlistPage page, string expectedMessage)
+        {
+            await page.ClickNextAsync();
+            await Task.Delay(500);
+            Assert.AreEqual(expectedMessage, page.DialogMessage);
+        }
     }
 }

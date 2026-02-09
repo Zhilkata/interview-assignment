@@ -18,5 +18,13 @@ jobs:
         run: dotnet build
       - name: Ensure browsers are installed
         run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      - name: Ugly temporary secret creation
+        run: |
+          cat > bin/Debug/net8.0/secrets.json << EOF
+          {
+            "baseUrl": "${{ SECRETS.BASEURL }}",
+            "simulatedApiUrl": "${{ SECRETS.SIMULATEDAPIURL}}"
+          }
+          EOF
       - name: Run your tests
         run: dotnet test
