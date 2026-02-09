@@ -19,6 +19,7 @@ Main repo contains a showcase of multiple Playwright functionalities, such as:
   - **API Mocking** alongside UI interaction
   - General adherence to the **Page Object Model** pattern for locator and internal page logics
   - **GitHub Actions setup** for automated test execution against branch activity
+  - **Local and CI/CD secrets** utilization
   - **Settings file** with customizable parameters
   - **Basic test report** export after each run
 
@@ -40,8 +41,6 @@ While I researched more about the topic, I found out that it might've been appro
 
 ### What can be improved
 - Divide the website page into multiple "component" page model object
-- Utilize regions and assign locators to their appropriate region for better structure and navigation
-- Split the DialogueHandler method in a Utility class, so that it can be reused in other pages in the future
 
 ## Tests
 Playwright and MSTest provide a lot of options for structuring the tests, and I've utilized only the barebones components to provide my showcase.
@@ -49,8 +48,7 @@ My biggest challenges for sure were the alert handling and API mocking. There's 
 
 ### What can be improved
 - More tests can be added, following the documented strategy and simulating other functionalities in the site. I decided to skip that to save time. If it was required, different functionalities would benefit from separate models and thus, from separate test classes.
-- Better naming, of both variables and tests. I'm still going through the recommended conventions for the tech stack.
-- API and UI testing would rarely live in the same place due to how unmaintanable and off-putting it looks. I've included the mocking simply to simulate and show the possibilities; in the real world, I'd avoid that.
+- API and UI testing would rarely live in the same place due to how unmaintainable and off-putting it looks. I've included the mocking simply to simulate and show the possibilities; in the real world, I'd avoid that.
 
 ## Others
 - The ``SampleTests.cs`` were part of the initial setup sanity testing the framework (I had installation problems that made me paranoid about it not breaking at some point). They also helped showcase the actions test success/failure reporting.
